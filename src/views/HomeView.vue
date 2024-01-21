@@ -13,6 +13,7 @@ export default {
   name: 'HomeView',
   created() {
     // this.game.board.board[0][0]?.move({ i: 0, j: 3 })
+    // this.game.setSelectedPiece(this.game.board.board[0][0])
   },
 
   data() {

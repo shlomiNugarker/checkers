@@ -1,9 +1,11 @@
+import type { BlackPiece } from './BlackPiece'
 import { Board } from './Board'
+import type { WhitePiece } from './WhitePiece'
 
 export class Game {
   board: Board
   isBlackTurn = false
-  selectedCoord: any
+  selectedPiece: BlackPiece | WhitePiece | null = null
 
   constructor() {
     this.board = new Board(this)
@@ -14,5 +16,9 @@ export class Game {
   }
   isBlackPiece(piece: string) {
     console.log('isBlackPiece', piece)
+  }
+
+  setSelectedPiece(piece: BlackPiece | WhitePiece | null) {
+    this.selectedPiece = piece
   }
 }
