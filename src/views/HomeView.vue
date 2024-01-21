@@ -1,12 +1,15 @@
 <template>
   <HeaderCmp />
-  <BoardCmp :board="game.board.board"></BoardCmp>
+  <BoardCmp :board="game.board.board" :onClickBoard="onClickBoard"></BoardCmp>
 </template>
 
 <script lang="ts">
 import BoardCmp from '../cmps/BoardCmp.vue'
 import HeaderCmp from '../cmps/HeaderCmp.vue'
 import { Game } from '../checkers/index'
+import { type Coord } from '../checkers/models/Coord'
+import { BlackPiece } from '../checkers/BlackPiece'
+import { WhitePiece } from '../checkers/WhitePiece'
 
 export default {
   props: [],
@@ -19,6 +22,24 @@ export default {
   data() {
     return {
       game: new Game()
+    }
+  },
+
+  methods: {
+    onClickBoard(ev: MouseEvent, coord: Coord) {
+      this.game.setSelectedPiece(this.game.board.board[coord.i][coord.j])
+    }
+  },
+
+  watch: {
+    'game.selectedPiece'(newVal: BlackPiece | WhitePiece | null) {
+      const els = document.querySelectorAll('.selected')
+      els.forEach((el) => el.classList.remove('selected'))
+
+      if (newVal) {
+        const el = document.querySelector(`#cell-${newVal?.coord.i}-${newVal?.coord.j}`)
+        el?.classList.add('selected')
+      }
     }
   },
   components: {

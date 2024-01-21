@@ -3,7 +3,13 @@
     <table>
       <tbody>
         <tr v-for="(row, i) in board" :key="i">
-          <td v-for="(cell, j) in row" :key="j" :class="(i + j) % 2 === 0 ? 'black' : 'white'">
+          <td
+            v-for="(cell, j) in row"
+            :key="j"
+            @click="onClickBoard($event, { i, j })"
+            :class="(i + j) % 2 === 0 ? 'black' : 'white'"
+            :id="`cell-${i}-${j}`"
+          >
             {{ cell?.name || ' ' }}
           </td>
         </tr>
@@ -14,7 +20,7 @@
 
 <script lang="ts">
 export default {
-  props: ['board'],
+  props: ['board', 'onClickBoard'],
   name: 'BoardCmp',
 
   data() {
@@ -43,6 +49,9 @@ section {
         }
         &.black {
           background-color: #aa8d78;
+        }
+        &.selected {
+          background-color: #646f40;
         }
       }
     }

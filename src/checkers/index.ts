@@ -14,8 +14,8 @@ export class Game {
   isValidMove(from: any, to: any) {
     console.log('isValidMove', from, to)
   }
-  isBlackPiece(piece: string) {
-    console.log('isBlackPiece', piece)
+  isBlackPiece(piece: BlackPiece | WhitePiece) {
+    return piece.name === 'b'
   }
 
   setSelectedPiece(piece: BlackPiece | WhitePiece | null) {
