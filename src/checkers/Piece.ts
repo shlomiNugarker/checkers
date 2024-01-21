@@ -1,11 +1,28 @@
-export class Piece {
-  coord: any
+import type { Game } from '.'
+import type { Coord } from './models/Coord'
 
-  constructor(coord: any) {
+export class Piece {
+  coord: Coord
+  game: Game
+
+  constructor(game: Game, coord: Coord) {
     this.coord = coord
+    this.game = game
   }
 
-  move(from: any, to: any) {
+  move(to: Coord, from: Coord | null = null) {
     console.log('move', from, to)
+    const PieceToMove = this.game.board.board[this.coord.i][this.coord.j]
+    this.game.board.board[this.coord.i][this.coord.j] = null
+
+    if (PieceToMove) {
+      PieceToMove.coord.i = to.i
+      PieceToMove.coord.j = to.j
+    }
+    this.game.board.board[to.i][to.j] = PieceToMove
+  }
+
+  getPossibleMoves = () => {
+    console.log('getPossibleMoves')
   }
 }
