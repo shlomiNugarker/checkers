@@ -1,8 +1,5 @@
 <template>
-  <div>
-    <h1>home</h1>
-    <BoardCmp :board="game.board.board"></BoardCmp>
-  </div>
+  <BoardCmp :board="game.board.board"></BoardCmp>
 </template>
 
 <script lang="ts">
@@ -24,8 +21,4 @@ export default {
 }
 </script>
 
-<style lang="scss" scoped>
-h1 {
-  color: red;
-}
-</style>
+<style lang="scss" scoped></style>

@@ -10,7 +10,7 @@ export class BlackPiece extends Piece {
     this.game = game
   }
 
-  getPossibleCoords = () => {
-    console.log('getAllPossibleCoords')
+  getPossibleMoves = () => {
+    console.log('getPossibleMoves')
   }
 }
