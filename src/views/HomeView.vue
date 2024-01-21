@@ -3,8 +3,17 @@
 </template>
 
 <script lang="ts">
+import { Game } from '../checkers/index'
+
 export default {
-  name: 'HomeView'
+  props: [],
+  name: 'HomeView',
+
+  data() {
+    return {
+      game: new Game()
+    }
+  }
 }
 </script>
 
