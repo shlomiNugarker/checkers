@@ -9,9 +9,6 @@ export class Game {
     this.board = new Board(this)
   }
 
-  movePiece(from: any, to: any) {
-    console.log('movePiece', from, to)
-  }
   isValidMove(from: any, to: any) {
     console.log('isValidMove', from, to)
   }
