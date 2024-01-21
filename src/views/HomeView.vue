@@ -1,14 +1,19 @@
 <template>
+  <HeaderCmp />
   <BoardCmp :board="game.board.board"></BoardCmp>
 </template>
 
 <script lang="ts">
 import BoardCmp from '../cmps/BoardCmp.vue'
+import HeaderCmp from '../cmps/HeaderCmp.vue'
 import { Game } from '../checkers/index'
 
 export default {
   props: [],
   name: 'HomeView',
+  created() {
+    // this.game.board.board[0][0]?.move({ i: 0, j: 3 })
+  },
 
   data() {
     return {
@@ -16,7 +21,8 @@ export default {
     }
   },
   components: {
-    BoardCmp
+    BoardCmp,
+    HeaderCmp
   }
 }
 </script>

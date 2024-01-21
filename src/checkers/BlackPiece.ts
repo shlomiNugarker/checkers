@@ -6,11 +6,7 @@ export class BlackPiece extends Piece {
   game: Game
 
   constructor(game: Game, coord: any) {
-    super(coord)
+    super(game, coord)
     this.game = game
-  }
-
-  getPossibleMoves = () => {
-    console.log('getPossibleMoves')
   }
 }
