@@ -1,10 +1,9 @@
-import { BlackPiece } from './BlackPiece'
 import type { Game } from '.'
-import { WhitePiece } from './WhitePiece'
+import { Piece } from './Piece'
 
 export class Board {
   game: Game
-  board: (BlackPiece | WhitePiece | null)[][] = []
+  board: (Piece | null)[][] = []
 
   constructor(game: Game) {
     this.game = game
@@ -16,19 +15,19 @@ export class Board {
         const coord = { i, j }
         // BLACK
         if (i === 0 && j % 2 === 0) {
-          piece = new BlackPiece(game, coord)
+          piece = new Piece('b', game, coord)
         } else if (i === 1 && j % 2 !== 0) {
-          piece = new BlackPiece(game, coord)
+          piece = new Piece('b', game, coord)
         } else if (i === 2 && j % 2 === 0) {
-          piece = new BlackPiece(game, coord)
+          piece = new Piece('b', game, coord)
         }
         // WHITE
         else if (i === 5 && j % 2 !== 0) {
-          piece = new WhitePiece(game, coord)
+          piece = new Piece('w', game, coord)
         } else if (i === 6 && j % 2 === 0) {
-          piece = new WhitePiece(game, coord)
+          piece = new Piece('w', game, coord)
         } else if (i === 7 && j % 2 !== 0) {
-          piece = new WhitePiece(game, coord)
+          piece = new Piece('w', game, coord)
         }
         this.board[i][j] = piece
       }
