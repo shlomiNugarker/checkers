@@ -1,11 +1,11 @@
-import type { BlackPiece } from './BlackPiece'
 import { Board } from './Board'
-import type { WhitePiece } from './WhitePiece'
+import type { Piece } from './Piece'
+import type { Coord } from './models/Coord'
 
 export class Game {
   board: Board
   isBlackTurn = false
-  selectedPiece: BlackPiece | WhitePiece | null = null
+  selectedPiece: Piece | null = null
 
   constructor() {
     this.board = new Board(this)
@@ -14,11 +14,28 @@ export class Game {
   isValidMove(from: any, to: any) {
     console.log('isValidMove', from, to)
   }
-  isBlackPiece(piece: BlackPiece | WhitePiece) {
+
+  isBlackPiece(piece: Piece) {
     return piece.name === 'b'
   }
 
-  setSelectedPiece(piece: BlackPiece | WhitePiece | null) {
+  setSelectedPiece(piece: Piece | null) {
     this.selectedPiece = piece
+  }
+
+  isEmptyCell(coord: Coord) {
+    return !!this.board.board[coord.i][coord.j]
+  }
+
+  onClickBoard(coord: Coord) {
+    // handle eatble move:
+    // handle piece color:
+    // handle step move:
+
+    // handle piece selection:
+    if (!this.selectedPiece) {
+      this.setSelectedPiece(this.board.board[coord.i][coord.j])
+      console.log(this)
+    }
   }
 }
