@@ -8,13 +8,13 @@ import BoardCmp from '../cmps/BoardCmp.vue'
 import HeaderCmp from '../cmps/HeaderCmp.vue'
 import { Game } from '../checkers/index'
 import { type Coord } from '../checkers/models/Coord'
-import { BlackPiece } from '../checkers/BlackPiece'
-import { WhitePiece } from '../checkers/WhitePiece'
+import { Piece } from '../checkers/Piece'
 
 export default {
   props: [],
   name: 'HomeView',
   created() {
+    // console.log(this.game.board.board[5][7]?.getPossibleMoves())
     // this.game.board.board[0][0]?.move({ i: 0, j: 3 })
     // this.game.setSelectedPiece(this.game.board.board[0][0])
   },
@@ -27,12 +27,12 @@ export default {
 
   methods: {
     onClickBoard(ev: MouseEvent, coord: Coord) {
-      this.game.setSelectedPiece(this.game.board.board[coord.i][coord.j])
+      this.game.onClickBoard(coord)
     }
   },
 
   watch: {
-    'game.selectedPiece'(newVal: BlackPiece | WhitePiece | null) {
+    'game.selectedPiece'(newVal: Piece | null) {
       const els = document.querySelectorAll('.selected')
       els.forEach((el) => el.classList.remove('selected'))
 
