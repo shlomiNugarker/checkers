@@ -2,6 +2,13 @@ import { Board } from './Board'
 import type { Piece } from './Piece'
 import type { Coord } from './models/Coord'
 
+export enum PieceType {
+  White = 'w',
+  Black = 'b',
+  WhiteKing = 'wk',
+  BlackKing = 'bk'
+}
+
 export class Game {
   board: Board
   isBlackTurn = false
@@ -12,7 +19,7 @@ export class Game {
   }
 
   isBlackPiece(piece: Piece) {
-    return piece.name === 'b' || piece.name === 'bk'
+    return piece.name === PieceType.Black || piece.name === PieceType.BlackKing
   }
 
   setSelectedPiece(piece: Piece | null) {
