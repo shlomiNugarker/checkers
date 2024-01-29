@@ -1,12 +1,18 @@
-import type { Game } from '.'
+import { PieceType, type Game } from '.'
 import type { Coord } from './models/Coord'
 
+interface PieceOptions {
+  name: PieceType
+  game: Game
+  coord: Coord
+}
+
 export class Piece {
-  name: string
+  name: PieceType
   coord: Coord
   game: Game
 
-  constructor(name: string, game: Game, coord: Coord) {
+  constructor({ name, game, coord }: PieceOptions) {
     this.name = name
     this.coord = coord
     this.game = game
@@ -18,94 +24,59 @@ export class Piece {
   }
 
   move(to: Coord) {
-    if (this.isValidMove(to)) {
-      const PieceToMove = this.game.board.board[this.coord.i][this.coord.j]
-      this.game.board.board[this.coord.i][this.coord.j] = null
+    if (!this.isValidMove(to)) return
 
-      if (PieceToMove) {
-        PieceToMove.coord.i = to.i
-        PieceToMove.coord.j = to.j
-      }
-      this.game.board.board[to.i][to.j] = PieceToMove
+    const pieceToMove = this.game.board.board[this.coord.i][this.coord.j]
+    this.game.board.board[this.coord.i][this.coord.j] = null
+
+    if (pieceToMove) {
+      pieceToMove.coord = to
     }
+    this.game.board.board[to.i][to.j] = pieceToMove
   }
 
   getPossibleMoves = () => {
-    const isWhitePiece = this.name === 'w'
-    const isBlackPiece = this.name === 'b'
-    const isWhiteKingPiece = this.name === 'wk'
-    const isBlackKingPiece = this.name === 'bk'
+    const isWhitePiece = this.name === PieceType.White
+    const isBlackPiece = this.name === PieceType.Black
+    const isWhiteKingPiece = this.name === PieceType.WhiteKing
+    const isBlackKingPiece = this.name === PieceType.BlackKing
 
-    const PossibleMoves: Coord[] = []
-
-    // HANDLE MOVES
-    const isRightWhiteCellMoveEmpty =
-      isWhitePiece && this.game.board.board[this.coord.i - 1][this.coord.j + 1] === null
-    const isRightWhiteMoveInsideTheBoard =
-      this.coord.i - 1 >= 0 &&
-      this.coord.i - 1 <= 7 &&
-      this.coord.j + 1 >= 0 &&
-      this.coord.j + 1 <= 7
-
-    const isLeftWhiteCellMoveEmpty =
-      isWhitePiece && this.game.board.board[this.coord.i - 1][this.coord.j - 1] === null
-    const isLeftWhiteMoveInsideTheBoard =
-      this.coord.i - 1 >= 0 &&
-      this.coord.i - 1 <= 7 &&
-      this.coord.j - 1 >= 0 &&
-      this.coord.j - 1 <= 7
-
-    const isRightBlackCellMoveEmpty =
-      isBlackPiece && this.game.board.board[this.coord.i + 1][this.coord.j + 1] === null
-    const isRightBlackMoveInsideTheBoard =
-      this.coord.i + 1 >= 0 &&
-      this.coord.i + 1 <= 7 &&
-      this.coord.j + 1 >= 0 &&
-      this.coord.j + 1 <= 7
-
-    const isLeftBlackCellMoveEmpty =
-      isBlackPiece && this.game.board.board[this.coord.i + 1][this.coord.j - 1] === null
-    const isLeftBlackMoveInsideTheBoard =
-      this.coord.i + 1 >= 0 &&
-      this.coord.i + 1 <= 7 &&
-      this.coord.j - 1 >= 0 &&
-      this.coord.j - 1 <= 7
+    const possibleMoves: Coord[] = []
 
     // WHITE PIECE
     if (isWhitePiece) {
-      isRightWhiteMoveInsideTheBoard &&
-        isRightWhiteCellMoveEmpty &&
-        PossibleMoves.push({ i: this.coord.i - 1, j: this.coord.j + 1 })
-      isLeftWhiteMoveInsideTheBoard &&
-        isLeftWhiteCellMoveEmpty &&
-        PossibleMoves.push({ i: this.coord.i - 1, j: this.coord.j - 1 })
+      this.isValidCell(this.coord.i - 1, this.coord.j + 1) &&
+        possibleMoves.push({ i: this.coord.i - 1, j: this.coord.j + 1 }) // Top-right
+
+      this.isValidCell(this.coord.i - 1, this.coord.j - 1) &&
+        possibleMoves.push({ i: this.coord.i - 1, j: this.coord.j - 1 }) // Top-left
     }
     // BLACK PIECE
     else if (isBlackPiece) {
-      isRightBlackMoveInsideTheBoard &&
-        isRightBlackCellMoveEmpty &&
-        PossibleMoves.push({ i: this.coord.i + 1, j: this.coord.j + 1 })
+      this.isValidCell(this.coord.i + 1, this.coord.j + 1) &&
+        possibleMoves.push({ i: this.coord.i + 1, j: this.coord.j + 1 }) // Bottom-right
 
-      isLeftBlackMoveInsideTheBoard &&
-        isLeftBlackCellMoveEmpty &&
-        PossibleMoves.push({ i: this.coord.i + 1, j: this.coord.j - 1 })
+      this.isValidCell(this.coord.i + 1, this.coord.j - 1) &&
+        possibleMoves.push({ i: this.coord.i + 1, j: this.coord.j - 1 }) // Bottom-left
     }
     // KING PIECE
     else if (isWhiteKingPiece || isBlackKingPiece) {
-      isRightWhiteMoveInsideTheBoard &&
-        isRightWhiteCellMoveEmpty &&
-        PossibleMoves.push({ i: this.coord.i - 1, j: this.coord.j + 1 })
-      isLeftWhiteMoveInsideTheBoard &&
-        isLeftWhiteCellMoveEmpty &&
-        PossibleMoves.push({ i: this.coord.i - 1, j: this.coord.j - 1 })
+      this.isValidCell(this.coord.i - 1, this.coord.j + 1) &&
+        possibleMoves.push({ i: this.coord.i - 1, j: this.coord.j + 1 }) // Top-right
 
-      isRightBlackMoveInsideTheBoard &&
-        isRightBlackCellMoveEmpty &&
-        PossibleMoves.push({ i: this.coord.i + 1, j: this.coord.j + 1 })
-      isLeftBlackMoveInsideTheBoard &&
-        isLeftBlackCellMoveEmpty &&
-        PossibleMoves.push({ i: this.coord.i + 1, j: this.coord.j - 1 })
+      this.isValidCell(this.coord.i - 1, this.coord.j - 1) &&
+        possibleMoves.push({ i: this.coord.i - 1, j: this.coord.j - 1 }) // Top-left
+
+      this.isValidCell(this.coord.i + 1, this.coord.j + 1) &&
+        possibleMoves.push({ i: this.coord.i + 1, j: this.coord.j + 1 }) // Bottom-right
+
+      this.isValidCell(this.coord.i + 1, this.coord.j - 1) &&
+        possibleMoves.push({ i: this.coord.i + 1, j: this.coord.j - 1 }) // Bottom-left
     }
-    return PossibleMoves
+    return possibleMoves
+  }
+
+  private isValidCell(i: number, j: number): boolean {
+    return i >= 0 && i < 8 && j >= 0 && j < 8 && !this.game.board.board[i][j]
   }
 }
