@@ -26,6 +26,41 @@ export class Piece {
   move(to: Coord) {
     if (!this.isValidMove(to)) return
 
+    // handle eating:
+    const doesDidTwoStepsForEatTopRight = this.coord.i - 2 === to.i && this.coord.j + 2 === to.j
+    const doesDidTwoStepsForEatTopLeft = this.coord.i - 2 === to.i && this.coord.j - 2 === to.j
+    const doesDidTwoStepsForEatBottomRight = this.coord.i + 2 === to.i && this.coord.j + 2 === to.j
+    const doesDidTwoStepsForEatBottomLeft = this.coord.i + 2 === to.i && this.coord.j - 2 === to.j
+
+    // WHITE
+    // eating top-right:
+    if (doesDidTwoStepsForEatTopRight) {
+      const eatenPiece = this.game.board.board[this.coord.i - 1][this.coord.j + 1]
+      if (eatenPiece && this.game.DoesThePieceBelongToTheOpponent(eatenPiece))
+        this.game.board.board[eatenPiece.coord.i][eatenPiece.coord.j] = null
+    }
+    // eating top-left:
+    else if (doesDidTwoStepsForEatTopLeft) {
+      const eatenPiece = this.game.board.board[this.coord.i - 1][this.coord.j - 1]
+      if (eatenPiece && this.game.DoesThePieceBelongToTheOpponent(eatenPiece))
+        this.game.board.board[eatenPiece.coord.i][eatenPiece.coord.j] = null
+    }
+
+    // BLACK
+    // eating Bottom-right:
+    else if (doesDidTwoStepsForEatBottomRight) {
+      const eatenPiece = this.game.board.board[this.coord.i + 1][this.coord.j + 1]
+      if (eatenPiece && this.game.DoesThePieceBelongToTheOpponent(eatenPiece))
+        this.game.board.board[eatenPiece.coord.i][eatenPiece.coord.j] = null
+    }
+    // eating Bottom-left:
+    else if (doesDidTwoStepsForEatBottomLeft) {
+      const eatenPiece = this.game.board.board[this.coord.i + 1][this.coord.j - 1]
+      if (eatenPiece && this.game.DoesThePieceBelongToTheOpponent(eatenPiece))
+        this.game.board.board[eatenPiece.coord.i][eatenPiece.coord.j] = null
+    }
+
+    // moving the player piece:
     const pieceToMove = this.game.board.board[this.coord.i][this.coord.j]
     this.game.board.board[this.coord.i][this.coord.j] = null
 
@@ -45,38 +80,67 @@ export class Piece {
 
     // WHITE PIECE
     if (isWhitePiece) {
-      this.isValidCell(this.coord.i - 1, this.coord.j + 1) &&
+      if (this.isValidCellForOneStep(this.coord.i - 1, this.coord.j + 1))
         possibleMoves.push({ i: this.coord.i - 1, j: this.coord.j + 1 }) // Top-right
+      else if (this.isPossibleToEat(this.coord.i - 1, this.coord.j + 1)) {
+        possibleMoves.push({ i: this.coord.i - 2, j: this.coord.j + 2 }) // Top-right - eat
+      }
 
-      this.isValidCell(this.coord.i - 1, this.coord.j - 1) &&
+      if (this.isValidCellForOneStep(this.coord.i - 1, this.coord.j - 1))
         possibleMoves.push({ i: this.coord.i - 1, j: this.coord.j - 1 }) // Top-left
+      else if (this.isPossibleToEat(this.coord.i - 1, this.coord.j - 1)) {
+        possibleMoves.push({ i: this.coord.i - 2, j: this.coord.j - 2 }) // Top-left - eat
+      }
     }
     // BLACK PIECE
     else if (isBlackPiece) {
-      this.isValidCell(this.coord.i + 1, this.coord.j + 1) &&
+      if (this.isValidCellForOneStep(this.coord.i + 1, this.coord.j + 1))
         possibleMoves.push({ i: this.coord.i + 1, j: this.coord.j + 1 }) // Bottom-right
+      else if (this.isPossibleToEat(this.coord.i + 1, this.coord.j + 1)) {
+        possibleMoves.push({ i: this.coord.i + 2, j: this.coord.j + 2 }) // Bottom-right - eat
+      }
 
-      this.isValidCell(this.coord.i + 1, this.coord.j - 1) &&
+      if (this.isValidCellForOneStep(this.coord.i + 1, this.coord.j - 1))
         possibleMoves.push({ i: this.coord.i + 1, j: this.coord.j - 1 }) // Bottom-left
+      else if (this.isPossibleToEat(this.coord.i + 1, this.coord.j - 1)) {
+        possibleMoves.push({ i: this.coord.i + 2, j: this.coord.j - 2 }) // Bottom-left - eat
+      }
     }
     // KING PIECE
     else if (isWhiteKingPiece || isBlackKingPiece) {
-      this.isValidCell(this.coord.i - 1, this.coord.j + 1) &&
+      if (this.isValidCellForOneStep(this.coord.i - 1, this.coord.j + 1)) {
         possibleMoves.push({ i: this.coord.i - 1, j: this.coord.j + 1 }) // Top-right
+      } else if (this.isPossibleToEat(this.coord.i - 1, this.coord.j + 1)) {
+        possibleMoves.push({ i: this.coord.i - 2, j: this.coord.j + 2 }) // Top-right - eat
+      }
 
-      this.isValidCell(this.coord.i - 1, this.coord.j - 1) &&
+      if (this.isValidCellForOneStep(this.coord.i - 1, this.coord.j - 1)) {
         possibleMoves.push({ i: this.coord.i - 1, j: this.coord.j - 1 }) // Top-left
+      } else if (this.isPossibleToEat(this.coord.i - 1, this.coord.j - 1)) {
+        possibleMoves.push({ i: this.coord.i - 2, j: this.coord.j - 2 }) // Top-left - eat
+      }
 
-      this.isValidCell(this.coord.i + 1, this.coord.j + 1) &&
+      if (this.isValidCellForOneStep(this.coord.i + 1, this.coord.j + 1)) {
         possibleMoves.push({ i: this.coord.i + 1, j: this.coord.j + 1 }) // Bottom-right
+      } else if (this.isPossibleToEat(this.coord.i + 1, this.coord.j + 1)) {
+        possibleMoves.push({ i: this.coord.i + 2, j: this.coord.j + 2 }) // Bottom-right - eat
+      }
 
-      this.isValidCell(this.coord.i + 1, this.coord.j - 1) &&
+      if (this.isValidCellForOneStep(this.coord.i + 1, this.coord.j - 1)) {
         possibleMoves.push({ i: this.coord.i + 1, j: this.coord.j - 1 }) // Bottom-left
+      } else if (this.isPossibleToEat(this.coord.i + 1, this.coord.j - 1)) {
+        possibleMoves.push({ i: this.coord.i + 2, j: this.coord.j - 2 }) // Bottom-left - eat
+      }
     }
     return possibleMoves
   }
 
-  private isValidCell(i: number, j: number): boolean {
+  private isValidCellForOneStep(i: number, j: number): boolean {
     return i >= 0 && i < 8 && j >= 0 && j < 8 && !this.game.board.board[i][j]
+  }
+  private isPossibleToEat(i: number, j: number) {
+    const pieceToEat = this.game.board.board[i][j]
+    if (pieceToEat && this.game.DoesThePieceBelongToTheOpponent(pieceToEat)) return true
+    return false
   }
 }
