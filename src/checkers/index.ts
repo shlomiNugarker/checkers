@@ -11,15 +11,23 @@ export enum PieceType {
 
 export class Game {
   board: Board
-  isBlackTurn = false
+  isBlackTurn = true
   selectedPiece: Piece | null = null
 
   constructor() {
     this.board = new Board(this)
   }
 
+  switchTurn() {
+    this.isBlackTurn = !this.isBlackTurn
+  }
+
   isBlackPiece(piece: Piece) {
     return piece.name === PieceType.Black || piece.name === PieceType.BlackKing
+  }
+
+  DoesThePieceBelongToTheOpponent(piece: Piece) {
+    return this.isBlackPiece(piece) !== this.isBlackTurn
   }
 
   setSelectedPiece(piece: Piece | null) {
@@ -31,17 +39,18 @@ export class Game {
   }
 
   onClickBoard(coord: Coord) {
-    // handle eatble move:
-    // handle piece color:
-    // handle step move:
-    if (this.selectedPiece) {
+    const clickedPiece = this.board.board[coord.i][coord.j]
+
+    if (clickedPiece) {
+      this.setSelectedPiece(clickedPiece)
+    } else if (this.selectedPiece) {
       this.selectedPiece.move(coord)
       this.selectedPiece = null
     }
 
     // handle piece selection:
     else if (!this.selectedPiece) {
-      this.setSelectedPiece(this.board.board[coord.i][coord.j])
+      this.setSelectedPiece(clickedPiece)
     }
   }
 }
