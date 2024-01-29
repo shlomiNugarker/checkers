@@ -14,8 +14,8 @@ export default {
   props: [],
   name: 'HomeView',
   created() {
-    // console.log(this.game.board.board[5][7]?.getPossibleMoves())
-    // this.game.board.board[0][0]?.move({ i: 0, j: 3 })
+    // this.game.board.board[0][0]?.move({ i: 3, j: 3 })
+    // console.log(this.game.board.board[2][2]?.getPossibleMoves())
     // this.game.setSelectedPiece(this.game.board.board[0][0])
   },
 
