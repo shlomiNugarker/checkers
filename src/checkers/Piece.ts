@@ -19,13 +19,11 @@ export class Piece {
   }
 
   isValidMove(to: Coord) {
-    console.log('isValidMove')
     const possibleMoves = this.getPossibleMoves()
     return possibleMoves.some((coord) => coord.i === to.i && coord.j === to.j)
   }
 
   move(to: Coord): void {
-    console.log('move')
     if (!this.isValidMove(to)) return
 
     // Check if the move is for eating
@@ -53,6 +51,7 @@ export class Piece {
       const isShouldBeBlackKing = this.game.isBlackPiece(pieceToMove) && pieceToMove.coord.i === 7
       const isShouldBeWhiteKing = !this.game.isBlackPiece(pieceToMove) && pieceToMove.coord.i === 0
 
+      // Mark as a king
       if (isShouldBeBlackKing) {
         pieceToMove.name = PieceType.BlackKing
       } else if (isShouldBeWhiteKing) {
@@ -67,10 +66,6 @@ export class Piece {
   }
 
   getPossibleMoves = (): Coord[] => {
-    console.log('getPossibleMoves')
-    // eslint-disable-next-line no-debugger
-    // debugger
-
     const isWhitePiece = this.name === PieceType.White
     const isBlackPiece = this.name === PieceType.Black
     const isWhiteKingPiece = this.name === PieceType.WhiteKing
@@ -87,8 +82,6 @@ export class Piece {
     ]
 
     const addMoves = (diections: { di: number; dj: number }[]) => {
-      console.log('addMoves')
-
       for (const direction of diections) {
         const newRow = this.coord.i + direction.di
         const newCol = this.coord.j + direction.dj
@@ -116,12 +109,10 @@ export class Piece {
   }
 
   private isValidCell(i: number, j: number): boolean {
-    console.log('isValidCellForOneStep')
     return i >= 0 && i < 8 && j >= 0 && j < 8
   }
   private isPossibleToEat(i: number, j: number) {
     const pieceToEat = this.game.board.board[i][j]
-    console.log('isPossibleToEat', { i, j })
     if (pieceToEat && this.game.DoesThePieceBelongToTheOpponent(pieceToEat)) return true
     return false
   }
