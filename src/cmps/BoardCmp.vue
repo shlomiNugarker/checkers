@@ -32,6 +32,9 @@ export default {
 <style lang="scss" scoped>
 section {
   border-spacing: 0;
+  display: flex;
+  justify-content: center;
+  align-items: center;
 
   tbody {
     tr {
