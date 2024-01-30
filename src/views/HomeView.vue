@@ -1,6 +1,8 @@
 <template>
-  <HeaderCmp />
-  <BoardCmp :board="game.board.board" :onClickBoard="onClickBoard"></BoardCmp>
+  <section>
+    <HeaderCmp />
+    <BoardCmp :board="game.board.board" :onClickBoard="onClickBoard"></BoardCmp>
+  </section>
 </template>
 
 <script lang="ts">
@@ -49,4 +51,8 @@ export default {
 }
 </script>
 
-<style lang="scss" scoped></style>
+<style lang="scss" scoped>
+section {
+  min-height: 100vh;
+}
+</style>
