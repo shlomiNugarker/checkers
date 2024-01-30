@@ -23,51 +23,36 @@ export class Piece {
     return possibleMoves.some((coord) => coord.i === to.i && coord.j === to.j)
   }
 
-  move(to: Coord) {
+  move(to: Coord): void {
     if (!this.isValidMove(to)) return
 
-    // handle eating:
-    const doesDidTwoStepsForEatTopRight = this.coord.i - 2 === to.i && this.coord.j + 2 === to.j
-    const doesDidTwoStepsForEatTopLeft = this.coord.i - 2 === to.i && this.coord.j - 2 === to.j
-    const doesDidTwoStepsForEatBottomRight = this.coord.i + 2 === to.i && this.coord.j + 2 === to.j
-    const doesDidTwoStepsForEatBottomLeft = this.coord.i + 2 === to.i && this.coord.j - 2 === to.j
+    // Check if the move is for eating
+    const di = to.i - this.coord.i
+    const dj = to.j - this.coord.j
+    const isEatingMove = Math.abs(di) === 2 && Math.abs(dj) === 2
 
-    // WHITE
-    // eating top-right:
-    if (doesDidTwoStepsForEatTopRight) {
-      const eatenPiece = this.game.board.board[this.coord.i - 1][this.coord.j + 1]
-      if (eatenPiece && this.game.DoesThePieceBelongToTheOpponent(eatenPiece))
-        this.game.board.board[eatenPiece.coord.i][eatenPiece.coord.j] = null
-    }
-    // eating top-left:
-    else if (doesDidTwoStepsForEatTopLeft) {
-      const eatenPiece = this.game.board.board[this.coord.i - 1][this.coord.j - 1]
-      if (eatenPiece && this.game.DoesThePieceBelongToTheOpponent(eatenPiece))
-        this.game.board.board[eatenPiece.coord.i][eatenPiece.coord.j] = null
+    if (isEatingMove) {
+      const eatenPieceCoord = { i: this.coord.i + di / 2, j: this.coord.j + dj / 2 }
+      const eatenPiece = this.game.board.board[eatenPieceCoord.i][eatenPieceCoord.j]
+      if (eatenPiece && this.game.DoesThePieceBelongToTheOpponent(eatenPiece)) {
+        this.game.board.board[eatenPieceCoord.i][eatenPieceCoord.j] = null
+      } else {
+        // Invalid eating move, handle error or log a message
+        return
+      }
     }
 
-    // BLACK
-    // eating Bottom-right:
-    else if (doesDidTwoStepsForEatBottomRight) {
-      const eatenPiece = this.game.board.board[this.coord.i + 1][this.coord.j + 1]
-      if (eatenPiece && this.game.DoesThePieceBelongToTheOpponent(eatenPiece))
-        this.game.board.board[eatenPiece.coord.i][eatenPiece.coord.j] = null
-    }
-    // eating Bottom-left:
-    else if (doesDidTwoStepsForEatBottomLeft) {
-      const eatenPiece = this.game.board.board[this.coord.i + 1][this.coord.j - 1]
-      if (eatenPiece && this.game.DoesThePieceBelongToTheOpponent(eatenPiece))
-        this.game.board.board[eatenPiece.coord.i][eatenPiece.coord.j] = null
-    }
-
-    // moving the player piece:
+    // Move the piece to the new position
     const pieceToMove = this.game.board.board[this.coord.i][this.coord.j]
     this.game.board.board[this.coord.i][this.coord.j] = null
 
     if (pieceToMove) {
       pieceToMove.coord = to
+      this.game.board.board[to.i][to.j] = pieceToMove
+    } else {
+      // Invalid move, handle error or log a message
+      return
     }
-    this.game.board.board[to.i][to.j] = pieceToMove
   }
 
   getPossibleMoves = () => {
@@ -78,7 +63,7 @@ export class Piece {
 
     const possibleMoves: Coord[] = []
 
-    // WHITE PIECE
+    // white piece
     if (isWhitePiece) {
       if (this.isValidCellForOneStep(this.coord.i - 1, this.coord.j + 1))
         possibleMoves.push({ i: this.coord.i - 1, j: this.coord.j + 1 }) // Top-right
@@ -92,7 +77,7 @@ export class Piece {
         possibleMoves.push({ i: this.coord.i - 2, j: this.coord.j - 2 }) // Top-left - eat
       }
     }
-    // BLACK PIECE
+    // black piece
     else if (isBlackPiece) {
       if (this.isValidCellForOneStep(this.coord.i + 1, this.coord.j + 1))
         possibleMoves.push({ i: this.coord.i + 1, j: this.coord.j + 1 }) // Bottom-right
@@ -106,7 +91,7 @@ export class Piece {
         possibleMoves.push({ i: this.coord.i + 2, j: this.coord.j - 2 }) // Bottom-left - eat
       }
     }
-    // KING PIECE
+    // king piece
     else if (isWhiteKingPiece || isBlackKingPiece) {
       if (this.isValidCellForOneStep(this.coord.i - 1, this.coord.j + 1)) {
         possibleMoves.push({ i: this.coord.i - 1, j: this.coord.j + 1 }) // Top-right
