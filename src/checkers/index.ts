@@ -23,10 +23,13 @@ export class Game {
   }
 
   isBlackPiece(piece: Piece) {
+    console.log('isBlackPiece')
     return piece.name === PieceType.Black || piece.name === PieceType.BlackKing
   }
 
   DoesThePieceBelongToTheOpponent(piece: Piece) {
+    console.log('DoesThePieceBelongToTheOpponent')
+
     return this.isBlackPiece(piece) !== this.isBlackTurn
   }
 
