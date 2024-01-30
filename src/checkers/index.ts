@@ -11,7 +11,7 @@ export enum PieceType {
 
 export class Game {
   board: Board
-  isBlackTurn = true
+  isBlackTurn = false
   selectedPiece: Piece | null = null
 
   constructor() {
@@ -38,15 +38,17 @@ export class Game {
     return this.board.board[coord.i][coord.j] === null
   }
 
+  isPlayerPiece(piece: Piece) {
+    return this.isBlackPiece(piece) === this.isBlackTurn
+  }
+
   onClickBoard(coord: Coord) {
     const clickedPiece = this.board.board[coord.i][coord.j]
-    if (clickedPiece) {
+    if (clickedPiece && this.isPlayerPiece(clickedPiece)) {
       this.setSelectedPiece(clickedPiece)
-    } else if (this.selectedPiece) {
-      this.selectedPiece.move(coord)
+    } else if (this.selectedPiece && this.isPlayerPiece(this.selectedPiece)) {
+      this.selectedPiece.move(coord) && this.switchTurn()
       this.selectedPiece = null
-    } else if (!this.selectedPiece) {
-      this.setSelectedPiece(clickedPiece)
     }
   }
 }

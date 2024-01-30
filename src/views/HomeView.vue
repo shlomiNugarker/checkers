@@ -1,6 +1,7 @@
 <template>
   <section>
     <HeaderCmp />
+    isBlackTurn: {{ game.isBlackTurn }}
     <BoardCmp :board="game.board.board" :onClickBoard="onClickBoard"></BoardCmp>
   </section>
 </template>

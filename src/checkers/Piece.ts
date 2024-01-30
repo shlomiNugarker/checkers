@@ -23,7 +23,7 @@ export class Piece {
     return possibleMoves.some((coord) => coord.i === to.i && coord.j === to.j)
   }
 
-  move(to: Coord): void {
+  move(to: Coord) {
     if (!this.isValidMove(to)) return
 
     // Check if the move is for eating
@@ -59,9 +59,10 @@ export class Piece {
       }
 
       this.game.board.board[to.i][to.j] = pieceToMove
+      return true
     } else {
       // Invalid move, handle error or log a message
-      return
+      return false
     }
   }
 
