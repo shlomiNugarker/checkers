@@ -55,67 +55,45 @@ export class Piece {
     }
   }
 
-  getPossibleMoves = () => {
+  getPossibleMoves = (): Coord[] => {
     const isWhitePiece = this.name === PieceType.White
     const isBlackPiece = this.name === PieceType.Black
     const isWhiteKingPiece = this.name === PieceType.WhiteKing
     const isBlackKingPiece = this.name === PieceType.BlackKing
 
     const possibleMoves: Coord[] = []
+    const whiteDirections = [
+      { di: -1, dj: 1 }, // Top-right / white
+      { di: -1, dj: -1 } // Top-left / white
+    ]
+    const blackDirections = [
+      { di: 1, dj: 1 }, // Bottom-right / black
+      { di: 1, dj: -1 } // Bottom-left / black
+    ]
 
-    // white piece
+    const addMoves = (diections: { di: number; dj: number }[]) => {
+      for (const direction of diections) {
+        const newRow = this.coord.i + direction.di
+        const newCol = this.coord.j + direction.dj
+
+        if (this.isValidCellForOneStep(newRow, newCol)) {
+          possibleMoves.push({ i: newRow, j: newCol })
+        } else if (this.isPossibleToEat(newRow, newCol)) {
+          const eatRow = newRow + direction.di
+          const eatCol = newCol + direction.dj
+          if (this.isValidCellForOneStep(eatRow, eatCol)) {
+            possibleMoves.push({ i: eatRow, j: eatCol })
+          }
+        }
+      }
+    }
+
     if (isWhitePiece) {
-      if (this.isValidCellForOneStep(this.coord.i - 1, this.coord.j + 1))
-        possibleMoves.push({ i: this.coord.i - 1, j: this.coord.j + 1 }) // Top-right
-      else if (this.isPossibleToEat(this.coord.i - 1, this.coord.j + 1)) {
-        possibleMoves.push({ i: this.coord.i - 2, j: this.coord.j + 2 }) // Top-right - eat
-      }
-
-      if (this.isValidCellForOneStep(this.coord.i - 1, this.coord.j - 1))
-        possibleMoves.push({ i: this.coord.i - 1, j: this.coord.j - 1 }) // Top-left
-      else if (this.isPossibleToEat(this.coord.i - 1, this.coord.j - 1)) {
-        possibleMoves.push({ i: this.coord.i - 2, j: this.coord.j - 2 }) // Top-left - eat
-      }
-    }
-    // black piece
-    else if (isBlackPiece) {
-      if (this.isValidCellForOneStep(this.coord.i + 1, this.coord.j + 1))
-        possibleMoves.push({ i: this.coord.i + 1, j: this.coord.j + 1 }) // Bottom-right
-      else if (this.isPossibleToEat(this.coord.i + 1, this.coord.j + 1)) {
-        possibleMoves.push({ i: this.coord.i + 2, j: this.coord.j + 2 }) // Bottom-right - eat
-      }
-
-      if (this.isValidCellForOneStep(this.coord.i + 1, this.coord.j - 1))
-        possibleMoves.push({ i: this.coord.i + 1, j: this.coord.j - 1 }) // Bottom-left
-      else if (this.isPossibleToEat(this.coord.i + 1, this.coord.j - 1)) {
-        possibleMoves.push({ i: this.coord.i + 2, j: this.coord.j - 2 }) // Bottom-left - eat
-      }
-    }
-    // king piece
-    else if (isWhiteKingPiece || isBlackKingPiece) {
-      if (this.isValidCellForOneStep(this.coord.i - 1, this.coord.j + 1)) {
-        possibleMoves.push({ i: this.coord.i - 1, j: this.coord.j + 1 }) // Top-right
-      } else if (this.isPossibleToEat(this.coord.i - 1, this.coord.j + 1)) {
-        possibleMoves.push({ i: this.coord.i - 2, j: this.coord.j + 2 }) // Top-right - eat
-      }
-
-      if (this.isValidCellForOneStep(this.coord.i - 1, this.coord.j - 1)) {
-        possibleMoves.push({ i: this.coord.i - 1, j: this.coord.j - 1 }) // Top-left
-      } else if (this.isPossibleToEat(this.coord.i - 1, this.coord.j - 1)) {
-        possibleMoves.push({ i: this.coord.i - 2, j: this.coord.j - 2 }) // Top-left - eat
-      }
-
-      if (this.isValidCellForOneStep(this.coord.i + 1, this.coord.j + 1)) {
-        possibleMoves.push({ i: this.coord.i + 1, j: this.coord.j + 1 }) // Bottom-right
-      } else if (this.isPossibleToEat(this.coord.i + 1, this.coord.j + 1)) {
-        possibleMoves.push({ i: this.coord.i + 2, j: this.coord.j + 2 }) // Bottom-right - eat
-      }
-
-      if (this.isValidCellForOneStep(this.coord.i + 1, this.coord.j - 1)) {
-        possibleMoves.push({ i: this.coord.i + 1, j: this.coord.j - 1 }) // Bottom-left
-      } else if (this.isPossibleToEat(this.coord.i + 1, this.coord.j - 1)) {
-        possibleMoves.push({ i: this.coord.i + 2, j: this.coord.j - 2 }) // Bottom-left - eat
-      }
+      addMoves(whiteDirections)
+    } else if (isBlackPiece) {
+      addMoves(blackDirections)
+    } else if (isWhiteKingPiece || isBlackKingPiece) {
+      addMoves([...whiteDirections, ...blackDirections])
     }
     return possibleMoves
   }
