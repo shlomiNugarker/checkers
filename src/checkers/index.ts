@@ -46,10 +46,7 @@ export class Game {
     } else if (this.selectedPiece) {
       this.selectedPiece.move(coord)
       this.selectedPiece = null
-    }
-
-    // handle piece selection:
-    else if (!this.selectedPiece) {
+    } else if (!this.selectedPiece) {
       this.setSelectedPiece(clickedPiece)
     }
   }
