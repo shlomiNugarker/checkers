@@ -50,6 +50,15 @@ export class Piece {
 
     if (pieceToMove) {
       pieceToMove.coord = to
+      const isShouldBeBlackKing = this.game.isBlackPiece(pieceToMove) && pieceToMove.coord.i === 7
+      const isShouldBeWhiteKing = !this.game.isBlackPiece(pieceToMove) && pieceToMove.coord.i === 0
+
+      if (isShouldBeBlackKing) {
+        pieceToMove.name = PieceType.BlackKing
+      } else if (isShouldBeWhiteKing) {
+        pieceToMove.name = PieceType.WhiteKing
+      }
+
       this.game.board.board[to.i][to.j] = pieceToMove
     } else {
       // Invalid move, handle error or log a message
