@@ -19,11 +19,13 @@ export class Piece {
   }
 
   isValidMove(to: Coord) {
+    console.log('isValidMove')
     const possibleMoves = this.getPossibleMoves()
     return possibleMoves.some((coord) => coord.i === to.i && coord.j === to.j)
   }
 
   move(to: Coord): void {
+    console.log('move')
     if (!this.isValidMove(to)) return
 
     // Check if the move is for eating
@@ -56,6 +58,10 @@ export class Piece {
   }
 
   getPossibleMoves = (): Coord[] => {
+    console.log('getPossibleMoves')
+    // eslint-disable-next-line no-debugger
+    // debugger
+
     const isWhitePiece = this.name === PieceType.White
     const isBlackPiece = this.name === PieceType.Black
     const isWhiteKingPiece = this.name === PieceType.WhiteKing
@@ -72,16 +78,18 @@ export class Piece {
     ]
 
     const addMoves = (diections: { di: number; dj: number }[]) => {
+      console.log('addMoves')
+
       for (const direction of diections) {
         const newRow = this.coord.i + direction.di
         const newCol = this.coord.j + direction.dj
 
-        if (this.isValidCellForOneStep(newRow, newCol)) {
+        if (this.isValidCell(newRow, newCol) && !this.game.board.board[newRow][newCol]) {
           possibleMoves.push({ i: newRow, j: newCol })
-        } else if (this.isPossibleToEat(newRow, newCol)) {
+        } else if (this.isValidCell(newRow, newCol) && this.isPossibleToEat(newRow, newCol)) {
           const eatRow = newRow + direction.di
           const eatCol = newCol + direction.dj
-          if (this.isValidCellForOneStep(eatRow, eatCol)) {
+          if (this.isValidCell(eatRow, eatCol) && !this.game.board.board[eatRow][eatCol]) {
             possibleMoves.push({ i: eatRow, j: eatCol })
           }
         }
@@ -98,11 +106,13 @@ export class Piece {
     return possibleMoves
   }
 
-  private isValidCellForOneStep(i: number, j: number): boolean {
-    return i >= 0 && i < 8 && j >= 0 && j < 8 && !this.game.board.board[i][j]
+  private isValidCell(i: number, j: number): boolean {
+    console.log('isValidCellForOneStep')
+    return i >= 0 && i < 8 && j >= 0 && j < 8
   }
   private isPossibleToEat(i: number, j: number) {
     const pieceToEat = this.game.board.board[i][j]
+    console.log('isPossibleToEat', { i, j })
     if (pieceToEat && this.game.DoesThePieceBelongToTheOpponent(pieceToEat)) return true
     return false
   }
