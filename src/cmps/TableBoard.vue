@@ -21,7 +21,7 @@
 <script lang="ts">
 export default {
   props: ['board', 'onClickBoard'],
-  name: 'BoardCmp',
+  name: 'TableBoard',
 
   data() {
     return {}
