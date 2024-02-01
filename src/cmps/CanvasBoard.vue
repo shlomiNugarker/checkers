@@ -1,5 +1,5 @@
 <template>
-  <section>
+  <section class="canvas-container">
     <canvas @click="handleClick($event)" ref="canvas" id="canvas" width="560" height="560"></canvas>
   </section>
 </template>
@@ -22,9 +22,14 @@ export default {
   },
   methods: {
     drawBoard() {
-      const tileSize = 70 // Size of each tile
-      const colors = ['#d18b47', '#ffce9e'] // Colors for the checkerboard pattern
-      const canvas = document.getElementById('canvas') as HTMLCanvasElement
+      // Set the canvas width and height to match the parent container
+      const parentWidth = this.$el.clientWidth
+      const canvas = this.$refs.canvas as HTMLCanvasElement
+      canvas.width = parentWidth
+      canvas.height = parentWidth
+
+      const colors = ['#d18b47', '#ffce9e']
+      const tileSize = canvas.width / 8
       this.ctx = canvas.getContext('2d')
       if (!this.ctx) return
       if (this.ctx) this.ctx.clearRect(0, 0, canvas.width, canvas.height)
@@ -70,8 +75,12 @@ export default {
       }
     },
     handleClick(ev: MouseEvent) {
-      const tileSize = 70
-      const canvas = document.getElementById('canvas') as HTMLCanvasElement
+      const parentWidth = this.$el.clientWidth
+      const canvas = this.$refs.canvas as HTMLCanvasElement
+      canvas.width = parentWidth
+      canvas.height = parentWidth
+
+      const tileSize = canvas.width / 8
 
       const rect = canvas.getBoundingClientRect()
       const mouseX = ev.clientX - rect.left
@@ -83,17 +92,18 @@ export default {
       this.onClickBoard(ev, { i: clickedRow, j: clickedCol })
       this.drawBoard()
     }
-  },
-  watch: {
-    'game.selectedPiece'() {}
   }
 }
 </script>
 
 <style lang="scss" scoped>
-section {
+.canvas-container {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 100%;
+  width: 600px;
   canvas {
-    border: 2px solid rgb(137, 31, 31);
   }
 }
 </style>
