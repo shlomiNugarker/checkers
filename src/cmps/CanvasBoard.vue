@@ -81,12 +81,11 @@ export default {
       const clickedRow = Math.floor(mouseY / tileSize)
 
       this.onClickBoard(ev, { i: clickedRow, j: clickedCol })
+      this.drawBoard()
     }
   },
   watch: {
-    'game.selectedPiece'() {
-      this.drawBoard()
-    }
+    'game.selectedPiece'() {}
   }
 }
 </script>
