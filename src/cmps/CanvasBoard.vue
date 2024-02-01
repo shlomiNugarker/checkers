@@ -7,7 +7,7 @@
 <script lang="ts">
 export default {
   props: ['game', 'onClickBoard'],
-  name: 'BoardCmp',
+  name: 'CanvasBoard',
 
   data() {
     return {
@@ -26,14 +26,36 @@ export default {
       const colors = ['#d18b47', '#ffce9e'] // Colors for the checkerboard pattern
       const canvas = document.getElementById('canvas') as HTMLCanvasElement
       this.ctx = canvas.getContext('2d')
+      if (!this.ctx) return
       if (this.ctx) this.ctx.clearRect(0, 0, canvas.width, canvas.height)
 
       for (let row = 0; row < 8; row++) {
         for (let col = 0; col < 8; col++) {
           // Draw the checkerboard pattern
           const colorIndex = (row + col) % 2
-          if (this.ctx) this.ctx.fillStyle = colors[colorIndex]
-          if (this.ctx) this.ctx.fillRect(col * tileSize, row * tileSize, tileSize, tileSize)
+          this.ctx.fillStyle = colors[colorIndex]
+          this.ctx.fillRect(col * tileSize, row * tileSize, tileSize, tileSize)
+
+          // Mark the selected piece
+          if (
+            this.game.selectedPiece &&
+            this.game.selectedPiece.coord.i !== -1 &&
+            this.game.selectedPiece.coord.j !== -1
+          ) {
+            const borderSize = 2 // Width of the border
+            const borderOffset = borderSize / 2
+            const selectedX = this.game.selectedPiece.coord.j * tileSize
+            const selectedY = this.game.selectedPiece.coord.i * tileSize
+
+            this.ctx.strokeStyle = 'red'
+            this.ctx.lineWidth = borderSize
+            this.ctx.strokeRect(
+              selectedX + borderOffset,
+              selectedY + borderOffset,
+              tileSize - borderSize,
+              tileSize - borderSize
+            )
+          }
 
           // Draw text at the center of each tile
           const text = this.game.board.board[row][col]?.name || ''

@@ -28,10 +28,7 @@ export default {
 
   methods: {
     onClickBoard(ev: MouseEvent, coord: Coord) {
-      console.log(coord)
-
       this.game.onClickBoard(coord)
-      console.table(this.game.board.board)
     }
   },
 
@@ -56,6 +53,6 @@ export default {
 
 <style lang="scss" scoped>
 section {
-  min-height: 100vh;
+  min-height: 90vh;
 }
 </style>
