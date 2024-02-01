@@ -1,20 +1,14 @@
 <template>
   <section class="home-container">
-    <NavCmp />
     <div class="board-container">
-      <UserPreviewCmp />
       <CanvasBoard :game="game" :onClickBoard="onClickBoard"></CanvasBoard>
-      <UserPreviewCmp />
     </div>
-    <ControllerCmp />
   </section>
 </template>
 
 <script lang="ts">
 import CanvasBoard from '../cmps/CanvasBoard.vue'
-import NavCmp from '../cmps/NavCmp.vue'
-import ControllerCmp from '../cmps/ControllerCmp.vue'
-import UserPreviewCmp from '../cmps/UserPreviewCmp.vue'
+
 import { Game } from '../checkers/index'
 import { type Coord } from '../checkers/models/Coord'
 
@@ -36,10 +30,7 @@ export default {
   },
 
   components: {
-    CanvasBoard,
-    NavCmp,
-    ControllerCmp,
-    UserPreviewCmp
+    CanvasBoard
   }
 }
 </script>

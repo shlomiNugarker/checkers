@@ -31,7 +31,7 @@ export default {
 
       const tileSize = canvas.width / 8
 
-      const colors = ['#d18b47', '#ffce9e']
+      const colors = ['#779954', '#e9edcc']
 
       this.ctx = canvas.getContext('2d')
       if (!this.ctx) return
@@ -50,12 +50,12 @@ export default {
             this.game.selectedPiece.coord.i !== -1 &&
             this.game.selectedPiece.coord.j !== -1
           ) {
-            const borderSize = 2 // Width of the border
+            const borderSize = 5
             const borderOffset = borderSize / 2
             const selectedX = this.game.selectedPiece.coord.j * tileSize
             const selectedY = this.game.selectedPiece.coord.i * tileSize
 
-            this.ctx.strokeStyle = 'blue'
+            this.ctx.strokeStyle = '#f4f680'
             this.ctx.lineWidth = borderSize
             this.ctx.strokeRect(
               selectedX + borderOffset,
@@ -128,7 +128,7 @@ export default {
       ctx.fillStyle = 'red'
       ctx.textAlign = 'center'
       ctx.textBaseline = 'middle'
-      ctx.fillText('K', x, y)
+      ctx.fillText('👑', x, y)
     },
 
     handleClick(ev: MouseEvent) {
@@ -161,6 +161,7 @@ export default {
   width: 100%;
   width: 600px;
   canvas {
+    border-radius: 15px;
   }
 }
 </style>

@@ -37,7 +37,6 @@ export class Piece {
       if (eatenPiece && this.game.DoesThePieceBelongToTheOpponent(eatenPiece)) {
         this.game.board.board[eatenPieceCoord.i][eatenPieceCoord.j] = null
       } else {
-        // Invalid eating move, handle error or log a message
         return false
       }
     }
@@ -62,7 +61,6 @@ export class Piece {
 
       return true
     } else {
-      // Invalid move, handle error or log a message
       return false
     }
   }
