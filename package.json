@@ -3,9 +3,10 @@
   "version": "0.0.0",
   "private": true,
   "type": "module",
+  "homepage": "https://shlomiNugarker.github.io/checkers-vue-js/",
   "scripts": {
-    "deploy": "npm run build && gh-pages -d dist",
-    "predeploy": "del /S /Q dist",
+    "predeploy": "npm run build",
+    "deploy": "gh-pages -d dist",
     "dev": "vite",
     "build": "run-p type-check \"build-only {@}\" --",
     "preview": "vite preview",
