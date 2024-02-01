@@ -38,7 +38,7 @@ export class Piece {
         this.game.board.board[eatenPieceCoord.i][eatenPieceCoord.j] = null
       } else {
         // Invalid eating move, handle error or log a message
-        return
+        return false
       }
     }
 
@@ -59,6 +59,7 @@ export class Piece {
       }
 
       this.game.board.board[to.i][to.j] = pieceToMove
+
       return true
     } else {
       // Invalid move, handle error or log a message
