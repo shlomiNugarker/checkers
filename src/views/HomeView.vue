@@ -2,12 +2,14 @@
   <section>
     <HeaderCmp />
     isBlackTurn: {{ game.isBlackTurn }}
-    <BoardCmp :board="game.board.board" :onClickBoard="onClickBoard"></BoardCmp>
+    <!-- <BoardCmp :board="game.board.board" :onClickBoard="onClickBoard"></BoardCmp> -->
+    <CanvasBoard :game="game" :onClickBoard="onClickBoard"></CanvasBoard>
   </section>
 </template>
 
 <script lang="ts">
-import BoardCmp from '../cmps/BoardCmp.vue'
+// import BoardCmp from '../cmps/BoardCmp.vue'
+import CanvasBoard from '../cmps/CanvasBoard.vue'
 import HeaderCmp from '../cmps/HeaderCmp.vue'
 import { Game } from '../checkers/index'
 import { type Coord } from '../checkers/models/Coord'
@@ -16,11 +18,7 @@ import { Piece } from '../checkers/Piece'
 export default {
   props: [],
   name: 'HomeView',
-  created() {
-    // this.game.board.board[0][0]?.move({ i: 3, j: 3 })
-    // console.log(this.game.board.board[2][2]?.getPossibleMoves())
-    // this.game.setSelectedPiece(this.game.board.board[0][0])
-  },
+  created() {},
 
   data() {
     return {
@@ -30,7 +28,10 @@ export default {
 
   methods: {
     onClickBoard(ev: MouseEvent, coord: Coord) {
+      console.log(coord)
+
       this.game.onClickBoard(coord)
+      console.table(this.game.board.board)
     }
   },
 
@@ -46,7 +47,8 @@ export default {
     }
   },
   components: {
-    BoardCmp,
+    // BoardCmp,
+    CanvasBoard,
     HeaderCmp
   }
 }
