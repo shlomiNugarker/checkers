@@ -13,6 +13,8 @@ export class Game {
   board: Board
   isBlackTurn = false
   selectedPiece: Piece | null = null
+  isBlackWon = false
+  isWhiteWon = false
 
   constructor() {
     this.board = new Board(this)
@@ -42,6 +44,33 @@ export class Game {
     return this.isBlackPiece(piece) === this.isBlackTurn
   }
 
+  getPlayerPieces(isBlackTurn: boolean = this.isBlackTurn) {
+    const playerPieces: Piece[] = []
+    this.board.board.forEach((rowPieces) => {
+      rowPieces.forEach((piece) => {
+        if (piece && isBlackTurn === this.isBlackPiece(piece)) {
+          playerPieces.push(piece)
+        }
+      })
+    })
+    return playerPieces
+  }
+
+  isGameOver() {
+    const playerPieces = this.getPlayerPieces()
+    // handle case when there are pieces without a legal move:
+    if (playerPieces.length) {
+      console.log()
+    }
+
+    // handle case if no more pieces:
+    if (!playerPieces.length) {
+      if (this.isBlackTurn) return (this.isWhiteWon = true)
+      else if (!this.isBlackTurn) return (this.isBlackWon = true)
+    }
+    return false
+  }
+
   onClickBoard(coord: Coord) {
     const clickedPiece = this.board.board[coord.i][coord.j]
     if (clickedPiece && this.isPlayerPiece(clickedPiece)) {
@@ -49,6 +78,7 @@ export class Game {
     } else if (this.selectedPiece && this.isPlayerPiece(this.selectedPiece)) {
       this.selectedPiece.move(coord) && this.switchTurn()
       this.selectedPiece = null
+      console.log(this.isGameOver())
     }
   }
 }

@@ -15,7 +15,6 @@ import { type Coord } from '../checkers/models/Coord'
 export default {
   props: [],
   name: 'HomeView',
-  created() {},
 
   data() {
     return {
