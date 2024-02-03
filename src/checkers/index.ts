@@ -63,7 +63,7 @@ export class Game {
       console.log()
     }
 
-    // handle case if no more pieces:
+    // handle case if there are no more pieces:
     if (!playerPieces.length) {
       if (this.isBlackTurn) return (this.isWhiteWon = true)
       else if (!this.isBlackTurn) return (this.isBlackWon = true)
@@ -78,7 +78,6 @@ export class Game {
     } else if (this.selectedPiece && this.isPlayerPiece(this.selectedPiece)) {
       this.selectedPiece.move(coord) && this.switchTurn()
       this.selectedPiece = null
-      console.log(this.isGameOver())
     }
   }
 }

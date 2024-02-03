@@ -18,7 +18,7 @@ import { PieceType } from '../checkers'
 import { Piece } from '../checkers/Piece'
 
 export default {
-  props: ['game', 'onClickBoard'],
+  props: ['game'],
   name: 'CanvasBoard',
 
   data() {
@@ -41,10 +41,12 @@ export default {
     handleMouseDown(ev: MouseEvent) {
       const { clickedRow, clickedCol } = this.getClickedRowCol(ev)
       const clickedPiece = this.game.board.board[clickedRow][clickedCol]
-      if (clickedPiece) this.draggingPiece = clickedPiece
+      if (clickedPiece) {
+        this.draggingPiece = clickedPiece
 
-      this.onClickBoard(ev, { i: clickedRow, j: clickedCol })
-      this.drawBoard(ev)
+        this.game.onClickBoard({ i: clickedRow, j: clickedCol })
+        this.drawBoard(ev)
+      }
     },
 
     handleMouseMove(ev: MouseEvent) {
@@ -116,9 +118,6 @@ export default {
             const radius = tileSize / 2.5
             const pieceColor = this.getPieceColor(this.draggingPiece)
             this.drawPiece(this.draggingPiece, this.ctx, mouseX, mouseY, radius, pieceColor)
-
-            //
-            // this.drawPiece(this.draggingPiece, this.ctx, mouseX, mouseY, radius, pieceColor)
           }
         }
       }
@@ -209,7 +208,7 @@ export default {
     handleMouseClick(ev: MouseEvent) {
       const { clickedRow, clickedCol } = this.getClickedRowCol(ev)
 
-      this.onClickBoard(ev, { i: clickedRow, j: clickedCol })
+      this.game.onClickBoard({ i: clickedRow, j: clickedCol })
       this.drawBoard(ev)
     }
   }

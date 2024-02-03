@@ -1,7 +1,7 @@
 <template>
   <section class="home-container">
     <div class="board-container">
-      <CanvasBoard :game="game" :onClickBoard="onClickBoard"></CanvasBoard>
+      <CanvasBoard :game="game"></CanvasBoard>
     </div>
   </section>
 </template>
@@ -15,18 +15,16 @@ import { type Coord } from '../checkers/models/Coord'
 export default {
   props: [],
   name: 'HomeView',
-
   data() {
     return {
-      game: new Game()
+      game: null as Game | null
     }
+  },
+  created() {
+    this.game = new Game()
   },
 
-  methods: {
-    onClickBoard(ev: MouseEvent, coord: Coord) {
-      this.game.onClickBoard(coord)
-    }
-  },
+  methods: {},
 
   components: {
     CanvasBoard
