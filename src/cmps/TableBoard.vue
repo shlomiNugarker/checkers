@@ -2,11 +2,11 @@
   <section>
     <table>
       <tbody>
-        <tr v-for="(row, i) in board" :key="i">
+        <tr v-for="(row, i) in game.board" :key="i">
           <td
             v-for="(cell, j) in row"
             :key="j"
-            @click="onClickBoard($event, { i, j })"
+            @click="game.onClickBoard({ i, j })"
             :class="(i + j) % 2 === 0 ? 'black' : 'white'"
             :id="`cell-${i}-${j}`"
           >
@@ -20,7 +20,7 @@
 
 <script lang="ts">
 export default {
-  props: ['board', 'onClickBoard'],
+  props: ['game'],
   name: 'TableBoard',
 
   data() {

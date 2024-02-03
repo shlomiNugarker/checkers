@@ -10,7 +10,6 @@
 import CanvasBoard from '../cmps/CanvasBoard.vue'
 
 import { Game } from '../checkers/index'
-import { type Coord } from '../checkers/models/Coord'
 
 export default {
   props: [],
