@@ -1,11 +1,21 @@
 <template>
   <section class="canvas-container">
-    <canvas @click="handleClick($event)" ref="canvas" id="canvas" width="560" height="560"></canvas>
+    <canvas
+      @mousedown="handleMouseDown($event)"
+      @mousemove="handleMouseMove($event)"
+      @click="handleMouseClick($event)"
+      @mouseup="handleMouseUp($event)"
+      ref="canvas"
+      id="canvas"
+      width="560"
+      height="560"
+    ></canvas>
   </section>
 </template>
 
 <script lang="ts">
 import { PieceType } from '../checkers'
+import { Piece } from '../checkers/Piece'
 
 export default {
   props: ['game', 'onClickBoard'],
@@ -16,14 +26,32 @@ export default {
       ctx: null as CanvasRenderingContext2D | null,
       squareSize: 50,
       numRows: 8,
-      numCols: 8
+      numCols: 8,
+      draggingPiece: null as Piece | null
     }
   },
   mounted() {
     this.drawBoard()
   },
   methods: {
-    drawBoard() {
+    handleMouseUp(ev: MouseEvent) {
+      this.draggingPiece = null
+    },
+
+    handleMouseDown(ev: MouseEvent) {
+      const { clickedRow, clickedCol } = this.getClickedRowCol(ev)
+      const clickedPiece = this.game.board.board[clickedRow][clickedCol]
+      if (clickedPiece) this.draggingPiece = clickedPiece
+
+      this.onClickBoard(ev, { i: clickedRow, j: clickedCol })
+      this.drawBoard(ev)
+    },
+
+    handleMouseMove(ev: MouseEvent) {
+      this.drawBoard(ev)
+    },
+
+    drawBoard(ev: MouseEvent | null = null) {
       const parentWidth = this.$el.clientWidth
       const canvas = this.$refs.canvas as HTMLCanvasElement
       canvas.width = parentWidth
@@ -71,20 +99,49 @@ export default {
             const pieceX = col * tileSize + tileSize / 2
             const pieceY = row * tileSize + tileSize / 2
             const radius = tileSize / 2.5
-            const pieceColor =
-              piece.name === PieceType.Black
-                ? 'black'
-                : piece.name === PieceType.BlackKing
-                  ? 'black'
-                  : 'white'
+            const pieceColor = this.getPieceColor(piece)
 
-            if (piece.name === PieceType.BlackKing || piece.name === PieceType.WhiteKing)
-              this.drawKingPiece(this.ctx, pieceX, pieceY, radius, pieceColor)
-            else {
-              this.drawCheckerPiece(this.ctx, pieceX, pieceY, radius, pieceColor)
-            }
+            const isDraggingPiece =
+              this.draggingPiece?.coord.i === row && this.draggingPiece?.coord.j === col
+
+            if (!isDraggingPiece)
+              this.drawPiece(piece, this.ctx, pieceX, pieceY, radius, pieceColor)
+          }
+
+          // Draw draggingPiece sperately
+          if (ev && this.draggingPiece instanceof Piece) {
+            const rect = canvas.getBoundingClientRect()
+            const mouseX = ev.clientX - rect.left
+            const mouseY = ev.clientY - rect.top
+            const radius = tileSize / 2.5
+            const pieceColor = this.getPieceColor(this.draggingPiece)
+            this.drawPiece(this.draggingPiece, this.ctx, mouseX, mouseY, radius, pieceColor)
+
+            //
+            // this.drawPiece(this.draggingPiece, this.ctx, mouseX, mouseY, radius, pieceColor)
           }
         }
+      }
+    },
+    getPieceColor(piece: Piece) {
+      return piece.name === PieceType.Black
+        ? 'black'
+        : piece.name === PieceType.BlackKing
+          ? 'black'
+          : 'white'
+    },
+    drawPiece(
+      piece: Piece,
+      ctx: CanvasRenderingContext2D,
+      x: number,
+      y: number,
+      radius: number,
+      color: string
+    ) {
+      if (piece.name === PieceType.BlackKing || piece.name === PieceType.WhiteKing)
+        this.drawKingPiece(ctx, x, y, radius, color)
+      else {
+        this.drawCheckerPiece(ctx, x, y, radius, color)
       }
     },
     drawCheckerPiece(
@@ -131,7 +188,7 @@ export default {
       ctx.fillText('👑', x, y)
     },
 
-    handleClick(ev: MouseEvent) {
+    getClickedRowCol(ev: MouseEvent) {
       const parentWidth = this.$el.clientWidth
       const canvas = this.$refs.canvas as HTMLCanvasElement
       canvas.width = parentWidth
@@ -146,8 +203,14 @@ export default {
       const clickedCol = Math.floor(mouseX / tileSize)
       const clickedRow = Math.floor(mouseY / tileSize)
 
+      return { clickedCol, clickedRow }
+    },
+
+    handleMouseClick(ev: MouseEvent) {
+      const { clickedRow, clickedCol } = this.getClickedRowCol(ev)
+
       this.onClickBoard(ev, { i: clickedRow, j: clickedCol })
-      this.drawBoard()
+      this.drawBoard(ev)
     }
   }
 }
@@ -158,7 +221,6 @@ export default {
   display: flex;
   align-items: center;
   justify-content: center;
-  width: 100%;
   width: 600px;
   canvas {
     border-radius: 15px;
