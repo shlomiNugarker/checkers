@@ -4,7 +4,7 @@
       @mousedown="handleMouseDown($event)"
       @mousemove="handleMouseMove($event)"
       @click="handleMouseClick($event)"
-      @mouseup="handleMouseUp($event)"
+      @mouseup="handleMouseUp"
       ref="canvas"
       id="canvas"
       width="560"
@@ -34,8 +34,19 @@ export default {
     this.drawBoard()
   },
   methods: {
-    handleMouseUp(ev: MouseEvent) {
+    handleMouseUp() {
       this.draggingPiece = null
+
+      document?.getElementById('canvas')?.classList.remove('grabbing')
+    },
+
+    handleMouseClick(ev: MouseEvent) {
+      const { clickedRow, clickedCol } = this.getClickedRowCol(ev)
+
+      this.game.onClickBoard({ i: clickedRow, j: clickedCol })
+      this.drawBoard(ev)
+
+      document?.getElementById('canvas')?.classList.remove('grabbing')
     },
 
     handleMouseDown(ev: MouseEvent) {
@@ -45,8 +56,10 @@ export default {
         this.draggingPiece = clickedPiece
 
         this.game.onClickBoard({ i: clickedRow, j: clickedCol })
-        this.drawBoard(ev)
       }
+      this.drawBoard(ev)
+
+      document?.getElementById('canvas')?.classList.add('grabbing')
     },
 
     handleMouseMove(ev: MouseEvent) {
@@ -203,13 +216,6 @@ export default {
       const clickedRow = Math.floor(mouseY / tileSize)
 
       return { clickedCol, clickedRow }
-    },
-
-    handleMouseClick(ev: MouseEvent) {
-      const { clickedRow, clickedCol } = this.getClickedRowCol(ev)
-
-      this.game.onClickBoard({ i: clickedRow, j: clickedCol })
-      this.drawBoard(ev)
     }
   }
 }
@@ -223,6 +229,11 @@ export default {
   width: 600px;
   canvas {
     border-radius: 15px;
+    cursor: grab;
+
+    &.grabbing {
+      cursor: grabbing;
+    }
   }
 }
 </style>
