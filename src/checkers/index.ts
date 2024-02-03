@@ -58,9 +58,10 @@ export class Game {
 
   isGameOver() {
     const playerPieces = this.getPlayerPieces()
+
     // handle case when there are pieces without a legal move:
     if (playerPieces.length) {
-      console.log()
+      return playerPieces.every((piece) => piece.getPossibleMoves().length === 0)
     }
 
     // handle case if there are no more pieces:
@@ -77,6 +78,7 @@ export class Game {
       this.setSelectedPiece(clickedPiece)
     } else if (this.selectedPiece && this.isPlayerPiece(this.selectedPiece)) {
       this.selectedPiece.move(coord) && this.switchTurn()
+      this.isGameOver()
       this.selectedPiece = null
     }
   }
