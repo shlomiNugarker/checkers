@@ -30,15 +30,35 @@ export default {
   },
   mounted() {
     this.drawBoard()
+    this.addTouchEvents()
   },
   methods: {
+    addTouchEvents() {
+      const canvas = this.$refs.canvas as HTMLCanvasElement
+      const ctx = canvas.getContext('2d')
+      if (!ctx) return
+
+      canvas.addEventListener('touchstart', (ev) => {
+        ev.preventDefault()
+        this.handleMouseClick(ev)
+      })
+
+      canvas.addEventListener('touchmove', (ev) => {
+        ev.preventDefault()
+        this.handleMouseMove(ev)
+      })
+
+      canvas.addEventListener('touchend', (ev) => {
+        ev.preventDefault()
+        this.handleMouseUp()
+      })
+    },
     handleMouseUp() {
       this.draggingPiece = null
-
       document?.getElementById('canvas')?.classList.remove('grabbing')
     },
 
-    handleMouseClick(ev: MouseEvent) {
+    handleMouseClick(ev: MouseEvent | TouchEvent) {
       const { clickedRow, clickedCol } = this.getClickedRowCol(ev)
 
       this.game.onClickBoard({ i: clickedRow, j: clickedCol })
@@ -47,12 +67,12 @@ export default {
       document?.getElementById('canvas')?.classList.remove('grabbing')
     },
 
-    handleMouseDown(ev: MouseEvent) {
+    handleMouseDown(ev: MouseEvent | TouchEvent) {
       const { clickedRow, clickedCol } = this.getClickedRowCol(ev)
       const clickedPiece = this.game.board.board[clickedRow][clickedCol]
+
       if (clickedPiece) {
         this.draggingPiece = clickedPiece
-
         this.game.onClickBoard({ i: clickedRow, j: clickedCol })
       }
       this.drawBoard(ev)
@@ -60,11 +80,11 @@ export default {
       document?.getElementById('canvas')?.classList.add('grabbing')
     },
 
-    handleMouseMove(ev: MouseEvent) {
+    handleMouseMove(ev: MouseEvent | TouchEvent) {
       this.drawBoard(ev)
     },
 
-    drawBoard(ev: MouseEvent | null = null) {
+    drawBoard(ev: MouseEvent | null | TouchEvent = null) {
       const parentWidth = this.$el.clientWidth
       const canvas = this.$refs.canvas as HTMLCanvasElement
       canvas.width = parentWidth
@@ -123,9 +143,7 @@ export default {
 
           // Draw draggingPiece sperately
           if (ev && this.draggingPiece instanceof Piece) {
-            const rect = canvas.getBoundingClientRect()
-            const mouseX = ev.clientX - rect.left
-            const mouseY = ev.clientY - rect.top
+            const { mouseX, mouseY } = this.getMouseXAndY(ev)
             const radius = tileSize / 2.5
             const pieceColor = this.getPieceColor(this.draggingPiece)
             this.drawPiece(this.draggingPiece, this.ctx, mouseX, mouseY, radius, pieceColor)
@@ -198,7 +216,24 @@ export default {
       ctx.fillText('👑', x, y)
     },
 
-    getClickedRowCol(ev: MouseEvent) {
+    getMouseXAndY(ev: MouseEvent | null | TouchEvent) {
+      let mouseX = 0
+      let mouseY = 0
+      const canvas = this.$refs.canvas as HTMLCanvasElement
+      const rect = canvas.getBoundingClientRect()
+
+      if (ev instanceof MouseEvent) {
+        mouseX = ev.clientX - rect.left
+        mouseY = ev.clientY - rect.top
+      } else if (ev instanceof TouchEvent) {
+        const touch = ev.touches[0]
+        mouseX = touch?.clientX - canvas.offsetLeft
+        mouseY = touch?.clientY - canvas.offsetTop
+      }
+      return { mouseX, mouseY }
+    },
+
+    getClickedRowCol(ev: MouseEvent | TouchEvent) {
       const parentWidth = this.$el.clientWidth
       const canvas = this.$refs.canvas as HTMLCanvasElement
       canvas.width = parentWidth
@@ -206,9 +241,7 @@ export default {
 
       const tileSize = canvas.width / 8
 
-      const rect = canvas.getBoundingClientRect()
-      const mouseX = ev.clientX - rect.left
-      const mouseY = ev.clientY - rect.top
+      const { mouseX, mouseY } = this.getMouseXAndY(ev)
 
       const clickedCol = Math.floor(mouseX / tileSize)
       const clickedRow = Math.floor(mouseY / tileSize)
