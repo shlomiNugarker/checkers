@@ -266,6 +266,12 @@ export default {
 
       return { clickedCol, clickedRow }
     }
+  },
+  watch: {
+    'game.moves'() {
+      const audio = new Audio('move.mp3')
+      audio.play()
+    }
   }
 }
 </script>

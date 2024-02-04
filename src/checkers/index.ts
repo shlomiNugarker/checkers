@@ -15,6 +15,7 @@ export class Game {
   selectedPiece: Piece | null = null
   isBlackWon = false
   isWhiteWon = false
+  moves = 0
 
   constructor() {
     this.board = new Board(this)
@@ -22,6 +23,7 @@ export class Game {
 
   switchTurn() {
     this.isBlackTurn = !this.isBlackTurn
+    return true
   }
 
   isBlackPiece(piece: Piece) {
@@ -77,7 +79,7 @@ export class Game {
     if (clickedPiece && this.isPlayerPiece(clickedPiece)) {
       this.setSelectedPiece(clickedPiece)
     } else if (this.selectedPiece && this.isPlayerPiece(this.selectedPiece)) {
-      this.selectedPiece.move(coord) && this.switchTurn()
+      this.selectedPiece.move(coord) && this.switchTurn() && this.moves++
       this.isGameOver()
       this.selectedPiece = null
     }
