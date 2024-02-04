@@ -24,7 +24,6 @@ export default {
   data() {
     return {
       ctx: null as CanvasRenderingContext2D | null,
-
       draggingPiece: null as Piece | null
     }
   },
@@ -204,15 +203,7 @@ export default {
       ctx.fill()
       ctx.closePath()
     },
-    drawPossiblMove(
-      ctx: CanvasRenderingContext2D,
-      x: number,
-      y: number,
-      radius: number,
-      color: string
-    ) {
-      ctx.closePath()
-    },
+
     drawKingPiece(
       ctx: CanvasRenderingContext2D,
       x: number,
@@ -238,7 +229,6 @@ export default {
 
       // Draw the king's symbol (sigma)
       ctx.font = `${radius * 1}px Arial`
-      ctx.fillStyle = 'red'
       ctx.textAlign = 'center'
       ctx.textBaseline = 'middle'
       ctx.fillText('👑', x, y)
