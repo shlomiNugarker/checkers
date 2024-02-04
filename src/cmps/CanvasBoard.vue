@@ -111,12 +111,12 @@ export default {
             this.game.selectedPiece.coord.i !== -1 &&
             this.game.selectedPiece.coord.j !== -1
           ) {
-            const borderSize = 5
+            const borderSize = 3
             const borderOffset = borderSize / 2
             const selectedX = this.game.selectedPiece.coord.j * tileSize
             const selectedY = this.game.selectedPiece.coord.i * tileSize
 
-            this.ctx.strokeStyle = '#f4f680'
+            this.ctx.strokeStyle = '#ffa800'
             this.ctx.lineWidth = borderSize
             this.ctx.strokeRect(
               selectedX + borderOffset,
@@ -147,6 +147,25 @@ export default {
             const radius = tileSize / 2.5
             const pieceColor = this.getPieceColor(this.draggingPiece)
             this.drawPiece(this.draggingPiece, this.ctx, mouseX, mouseY, radius, pieceColor)
+          }
+
+          // Draw possible moves:
+          if (this.game.selectedPiece instanceof Piece) {
+            const piece = this.game.selectedPiece as Piece
+            const possibleMoves = piece.getPossibleMoves()
+
+            possibleMoves.forEach((coord) => {
+              if (this.ctx && coord.i === row && coord.j === col) {
+                const pieceX = col * tileSize + tileSize / 2
+                const pieceY = row * tileSize + tileSize / 2
+                this.ctx.beginPath()
+                const radius = tileSize / 8
+                this.ctx.arc(pieceX, pieceY, radius, 0, 2 * Math.PI)
+                this.ctx.fillStyle = '#ffa800'
+                this.ctx.fill()
+                this.ctx.closePath()
+              }
+            })
           }
         }
       }
@@ -183,6 +202,15 @@ export default {
       ctx.arc(x, y, radius, 0, 2 * Math.PI)
       ctx.fillStyle = color
       ctx.fill()
+      ctx.closePath()
+    },
+    drawPossiblMove(
+      ctx: CanvasRenderingContext2D,
+      x: number,
+      y: number,
+      radius: number,
+      color: string
+    ) {
       ctx.closePath()
     },
     drawKingPiece(
