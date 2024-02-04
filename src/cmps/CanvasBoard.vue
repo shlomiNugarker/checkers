@@ -7,8 +7,8 @@
       @mouseup="handleMouseUp"
       ref="canvas"
       id="canvas"
-      width="560"
-      height="560"
+      width="700"
+      height="700"
     ></canvas>
   </section>
 </template>
@@ -24,9 +24,7 @@ export default {
   data() {
     return {
       ctx: null as CanvasRenderingContext2D | null,
-      squareSize: 50,
-      numRows: 8,
-      numCols: 8,
+
       draggingPiece: null as Piece | null
     }
   },
@@ -226,13 +224,46 @@ export default {
   display: flex;
   align-items: center;
   justify-content: center;
-  width: 600px;
+
   canvas {
     border-radius: 15px;
     cursor: grab;
 
     &.grabbing {
       cursor: grabbing;
+    }
+  }
+}
+
+@media (min-width: 700px) {
+  .canvas-container {
+    canvas {
+      width: 700px;
+      height: 700px;
+    }
+  }
+}
+@media (max-width: 600px) {
+  .canvas-container {
+    canvas {
+      width: 500px;
+      height: 500px;
+    }
+  }
+}
+@media (max-width: 500px) {
+  .canvas-container {
+    canvas {
+      width: 400px;
+      height: 400px;
+    }
+  }
+}
+@media (max-width: 400px) {
+  .canvas-container {
+    canvas {
+      width: 300px;
+      height: 300px;
     }
   }
 }
