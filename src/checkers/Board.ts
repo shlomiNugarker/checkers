@@ -1,4 +1,4 @@
-import { PieceType, type Game } from '.'
+import { PieceType, Game } from '.'
 import { Piece } from './Piece'
 
 export class Board {
@@ -13,22 +13,16 @@ export class Board {
       for (let j = 0; j < 8; j++) {
         let piece = null
         const coord = { i, j }
-        // Initialize black pieces
-        if (i === 0 && j % 2 === 0) {
-          piece = new Piece({ name: PieceType.Black, game, coord })
-        } else if (i === 1 && j % 2 !== 0) {
-          piece = new Piece({ name: PieceType.Black, game, coord })
-        } else if (i === 2 && j % 2 === 0) {
-          piece = new Piece({ name: PieceType.Black, game, coord })
+
+        // Initialize pieces based on their positions
+        if ((i + j) % 2 === 0) {
+          if (i < 3) {
+            piece = new Piece({ name: PieceType.Black, game, coord })
+          } else if (i > 4) {
+            piece = new Piece({ name: PieceType.White, game, coord })
+          }
         }
-        // Initialize white pieces
-        else if (i === 5 && j % 2 !== 0) {
-          piece = new Piece({ name: PieceType.White, game, coord })
-        } else if (i === 6 && j % 2 === 0) {
-          piece = new Piece({ name: PieceType.White, game, coord })
-        } else if (i === 7 && j % 2 !== 0) {
-          piece = new Piece({ name: PieceType.White, game, coord })
-        }
+
         this.board[i][j] = piece
       }
     }

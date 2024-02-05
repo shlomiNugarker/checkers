@@ -31,6 +31,7 @@ export default {
     this.drawBoard()
     this.addTouchEvents()
   },
+
   methods: {
     addTouchEvents() {
       const canvas = this.$refs.canvas as HTMLCanvasElement
